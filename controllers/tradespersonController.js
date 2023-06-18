@@ -34,16 +34,9 @@ const getTradespersonById = async (req, res) => {
 
 // Create a new tradesperson
 const createTradesperson = async (req, res) => {
-  const { body, files } = req;
+  const { body } = req;
   const { name, profession, email, phone, bio } = body;
 
-  let portfolio_photos = '';
-
-  // Upload images if files are provided
-  if (files) {
-    const uploadedUrls = await Promise.all(files.map(imageUtils.uploadImageToStorage));
-    portfolio_photos = uploadedUrls.join(';'); // Use ';' as the delimiter between URLs
-  }
 
   // Check if the provided profession is valid
   if (!validateProfession(profession)) {
@@ -58,7 +51,6 @@ const createTradesperson = async (req, res) => {
         email, 
         phone, 
         bio,
-        uploadedPhotos,
       });
     res.send({ message: 'Tradesperson created', tradesperson: newTradesperson });
   } catch (error) {
