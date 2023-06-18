@@ -2,12 +2,12 @@ const { Storage } = require('@google-cloud/storage');
 const config = require('../config');
 
 const storage = new Storage({
-  projectId: config.google_cloud.images.projectId,
-  keyFilename: config.google_cloud.images.keyFilename,
+  projectId: config.gcp.images.projectId,
+  keyFilename: config.gcp.images.keyFilename,
 });
 
 async function uploadImageToStorage(image, bucketKey) {
-  const bucketName = config.google_cloud.images.buckets[bucketKey]
+  const bucketName = config.gcp.images.buckets[bucketKey]
   const bucket = storage.bucket(bucketName);
 
   // Generate a unique filename for the image

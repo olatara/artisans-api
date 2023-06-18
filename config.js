@@ -9,7 +9,7 @@ const config = {
       password: 'my_password',
       database: 'artisans',
     },
-    google_cloud: {
+    gcp: {
       images: {
         projectId: 'your-project-id',
         keyFilename: 'path/to/service-account-key.json',
@@ -29,7 +29,7 @@ const config = {
       password: 'production_password',
       database: 'production_db',
     },
-    google_cloud: {
+    gcp: {
       images: {
         projectId: 'your-project-id',
         keyFilename: 'path/to/service-account-key.json',
