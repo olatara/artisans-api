@@ -6,7 +6,7 @@ const responseFormatter = require('./middleware/response');
 const tradespersonRoutes = require('./routes/tradesperson');
 const availabilityRoutes = require('./routes/availability');
 const errorMiddleware = require('./middleware/errors');
-const { development } = require('./config');
+const config = require('./config');
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // Database connection example
-const dbConfig = development.database;
+const dbConfig = config.database;
 // Replace this example with your actual database connection logic
 
 // Start the server
