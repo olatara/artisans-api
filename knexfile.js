@@ -4,12 +4,10 @@ module.exports = {
   development: {
     client: 'mysql2', // Replace with your database client
     connection: {
-      host: config.development.database.host,
-      user: config.development.database.username,
-      database: config.development.database.database,
-      password: config.development.database.password,
-      
-      // port: config.development.database.port,
+      host: config.database.host,
+      user: config.database.username,
+      database: config.database.database,
+      password: config.database.password,
     },
     migrations: {
       directory: './migrations',

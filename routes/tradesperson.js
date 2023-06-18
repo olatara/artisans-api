@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const fileUpload = require('../middleware/fileUpload');
 const tradespersonController = require('../controllers/tradespersonController');
 
 // GET all tradespersons
@@ -16,5 +17,10 @@ router.put('/:id', tradespersonController.updateTradespersonById);
 
 // DELETE tradesperson by ID
 router.delete('/:id', tradespersonController.deleteTradespersonById);
+
+
+// MOVE THESE TO OWN ROUTER FILE
+// Use the file upload middleware for the specific route
+router.post('/upload', fileUpload, tradespersonController.addPortfolioImages);
 
 module.exports = router;

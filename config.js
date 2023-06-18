@@ -9,6 +9,16 @@ const config = {
       password: 'my_password',
       database: 'artisans',
     },
+    google_cloud: {
+      images: {
+        projectId: 'your-project-id',
+        keyFilename: 'path/to/service-account-key.json',
+        buckets: {
+          portfolio_images : "your-bucket-name",
+          profile_pictures: "your-bucket-name"
+        }
+      }
+    }
     // Add other development environment configurations here
   },
   production: {
@@ -19,8 +29,22 @@ const config = {
       password: 'production_password',
       database: 'production_db',
     },
-    // Add other production environment configurations here
+    google_cloud: {
+      images: {
+        projectId: 'your-project-id',
+        keyFilename: 'path/to/service-account-key.json',
+        buckets: {
+          portfolio_images : "your-bucket-name",
+          profile_pictures: "your-bucket-name"
+        }
+      }
+    }
   },
 };
 
-module.exports = config;
+function getConfig() {
+  const env = process.env.NODE_ENV || 'development';
+  return config[env] || config.development;
+}
+
+module.exports = getConfig();
