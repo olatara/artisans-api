@@ -1,12 +1,13 @@
 const port = process.env.PORT || 3000;
 
-const express = require('express');
-const { json, urlencoded } = require('express');
-const responseFormatter = require('./middleware/response');
-const tradespersonRoutes = require('./routes/tradesperson');
-const availabilityRoutes = require('./routes/availability');
-const errorMiddleware = require('./middleware/errors');
-const config = require('./config');
+const express = require("express");
+const { json, urlencoded } = require("express");
+const responseFormatter = require("./middleware/response");
+const tradespersonRoutes = require("./routes/tradesperson");
+const availabilityRoutes = require("./routes/availability");
+const imagesRoutes = require("./routes/images");
+const errorMiddleware = require("./middleware/errors");
+const config = require("./config");
 
 const app = express();
 
@@ -19,12 +20,13 @@ app.use(errorMiddleware);
 app.use(responseFormatter);
 
 // Routes
-app.use('/api/tradesperson', tradespersonRoutes);
-app.use('/api/availability', availabilityRoutes);
+app.use("/api/tradesperson", tradespersonRoutes);
+app.use("/api/availability", availabilityRoutes);
+app.use("/api/images", imagesRoutes);
 
 // Routes
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
 });
 
 // Database connection example
