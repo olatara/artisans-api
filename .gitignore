@@ -6,6 +6,7 @@
 # Environment files
 .env
 .env.*
+artisans-dev-firebase-adminsdk-kdvgs-b1fe5283d2.json
 
 # Build output
 /dist

@@ -5,7 +5,7 @@ const { json, urlencoded } = require("express");
 const responseFormatter = require("./middleware/response");
 const tradespersonRoutes = require("./routes/tradesperson");
 const availabilityRoutes = require("./routes/availability");
-const imagesRoutes = require("./routes/images");
+const portfolioRoutes = require("./routes/portfolio");
 const errorMiddleware = require("./middleware/errors");
 const config = require("./config");
 
@@ -20,9 +20,12 @@ app.use(errorMiddleware);
 app.use(responseFormatter);
 
 // Routes
+
+app.use("/api/tradesperson/:tradespersonId/portfolio", portfolioRoutes);
 app.use("/api/tradesperson", tradespersonRoutes);
 app.use("/api/availability", availabilityRoutes);
-app.use("/api/images", imagesRoutes);
+
+// GET /api/tradesperson/:tid/porfolio/:id
 
 // Routes
 app.get("/", (req, res) => {

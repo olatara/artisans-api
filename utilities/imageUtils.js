@@ -1,5 +1,5 @@
-const { Storage } = require('@google-cloud/storage');
-const config = require('../config');
+const { Storage } = require("@google-cloud/storage");
+const config = require("../config");
 
 const storage = new Storage({
   projectId: config.gcp.images.projectId,
@@ -7,7 +7,8 @@ const storage = new Storage({
 });
 
 async function uploadImageToStorage(image, bucketKey) {
-  const bucketName = config.gcp.images.buckets[bucketKey]
+  console.log(bucketKey);
+  const bucketName = config.gcp.images.buckets[bucketKey];
   const bucket = storage.bucket(bucketName);
 
   // Generate a unique filename for the image
@@ -23,8 +24,8 @@ async function uploadImageToStorage(image, bucketKey) {
 
   // Return a promise that resolves when the upload is complete
   return new Promise((resolve, reject) => {
-    stream.on('error', reject);
-    stream.on('finish', () => {
+    stream.on("error", reject);
+    stream.on("finish", () => {
       // Build the public URL for the uploaded image
       const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
       resolve(publicUrl);
@@ -37,7 +38,7 @@ async function uploadImageToStorage(image, bucketKey) {
 async function deleteImageFromStorage(url) {
   const filename = getFilenameFromUrl(url);
   const bucketName = getBucketNameFromUrl(url);
-  
+
   const bucket = storage.bucket(bucketName);
 
   const file = bucket.file(filename);
@@ -48,17 +49,17 @@ async function deleteImageFromStorage(url) {
 
 // Helper function to extract filename from URL
 const getFilenameFromUrl = (url) => {
-  const parts = url.split('/');
+  const parts = url.split("/");
   return parts[parts.length - 1];
 };
 
 // Helper function to extract bucket name from URL
 const getBucketNameFromUrl = (url) => {
-  const parts = url.split('/');
+  const parts = url.split("/");
   return parts[parts.length - 2];
 };
 
 module.exports = {
   uploadImageToStorage,
-  deleteImageFromStorage
+  deleteImageFromStorage,
 };
