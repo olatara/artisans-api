@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const fileUpload = require("../middleware/fileUpload");
 const portfolioController = require("../controllers/portfolioController");
 
@@ -8,6 +8,6 @@ router.post("/", fileUpload, portfolioController.createPortfolio);
 
 router.patch("/:id", fileUpload, portfolioController.updatePortfolio);
 
-router.delete("/:id", portfolioController.addPortfolioImages);
+// router.delete("/:id", portfolioController.addPortfolioImages);
 
 module.exports = router;

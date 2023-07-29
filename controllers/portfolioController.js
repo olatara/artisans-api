@@ -5,53 +5,95 @@ const env = process.env.NODE_ENV || "development";
 const db = knex(knexConfig[env]);
 
 const createPortfolio = async (req, res) => {
-  const { tradespersonId } = req.params;
+  const { tradespersonId: tradesperson_id } = req.params;
   const { name, description } = req.body;
   const { files } = req;
   // validate portfolio request
 
-  // insert images into google storage
-  // : returns ['urls']
-
-  // insert request, and image urls array into the portfolio table.
-
   try {
-    const images = addPortfolioImages(files);
+    const images = await addPortfolioImages(files, tradesperson_id);
 
     // Update the tradesperson's portfolio_photos with the new image URLs
-    await db("portfolio").insert({
+    const newPortfolio = {
+      tradesperson_id,
       name,
       description,
       photos: JSON.stringify(images),
-    });
+    }
 
-    res.send({ message: "Portfolio images added", tradespersonId: id });
+    await db("portfolio").insert(newPortfolio);
+
+    res.send({ message: "Portfolio images added", newPortfolio});
   } catch (error) {
-    res.status(500).send({ message: "Error adding portfolio images", error });
+    res.status(500).send({ message: "Error creating portfolio", error });
   }
 };
 
 const updatePortfolio = async (req, res) => {
-  // validate portfolio request -
-  // get images from cloud
-  // update gcp = insert/ delete new/ old images
-  // insert images into google storage
-  // : returns ['urls']
-  // insert and image urls array into the portfolio table.
+  const { tradespersonId } = req.params;
+  const { name, description } = req.body;
+  const { files } = req;
+
+  // Validate portfolio request (you can define a separate function for validation)
+
   try {
+    // Get the tradesperson's current portfolio
+    const portfolio = await getTradespersonPortfolio(tradespersonId);
+
+    if (portfolio.length === 0) {
+      res.status(404).send({ message: "Portfolio not found" });
+    }
+
+    // Retrieve the list of current image URLs from the portfolio in the database
+    const currentImages = portfolio.photos ? JSON.parse(portfolio.photos) : [];
+
+    // Get new images file names
+    const newImages = await Promise.all(
+      files.map((image) => image.originalname)
+    );
+
+    const { 
+      imagesToAddNames, 
+      imagesToDelete 
+    } = compareImages(currentImages, newImages);
+
+    const filesToAdd = files.filter(
+      (image) => imagesToAddNames.includes(image.originalname)
+    );
+
+    // Delete the images from GCP storage
+    await Promise.all(
+      imagesToDelete.map((image) =>
+        imageUtils.deleteImageFromStorage(image)
+      )
+    );
+
+    // Add the new images to GCP storage
+    const imageUrls = addPortfolioImages(filesToAdd);
+
+    // Update the tradesperson's portfolio in the database
     await db("portfolio")
-      .where({
-        tradesperson_id: tradespersonId,
-        description,
-      })
+      .where({ tradesperson_id: tradespersonId })
       .update({
         name,
-        photos: JSON.stringify(images),
+        description,
+        photos: JSON.stringify(imageUrls),
       });
-  } catch (error) {}
+
+    res.send({ message: "Portfolio updated", tradespersonId });
+  } catch (error) {
+    res.status(500).send({ message: "Error updating portfolio", error });
+  }
 };
 
-const addPortfolioImages = async (files) => {
+
+const compareImages = (currentImages, newImages) => {
+  const imagesToAdd = newImages.filter((image) => !currentImages.includes(image));
+  const imagesToDelete = currentImages.filter((image) => !newImages.includes(image));
+  return { imagesToAdd, imagesToDelete };
+}
+
+const addPortfolioImages = async (files, tradespersonId) => {
   if (!files || !Array.isArray(files) || files.length === 0) {
     return res.status(400).json({ error: "No images provided" });
   }
@@ -60,7 +102,7 @@ const addPortfolioImages = async (files) => {
     // Upload images and get their URLs
     const imageUrls = await Promise.all(
       files.map((file) =>
-        imageUtils.uploadImageToStorage(file, "portfolio_images")
+        imageUtils.uploadImageToStorage(file, "portfolio_images", tradespersonId)
       )
     );
     return imageUrls;
@@ -69,7 +111,14 @@ const addPortfolioImages = async (files) => {
   }
 };
 
-// tradesperson -> Portfolio -> images
+const getTradespersonPortfolio = async (tradespersonId) => {
+  // Retrieve the tradesperson's portfolio by tradesperson ID
+  const portfolio = await db("portfolio")
+    .where({ tradesperson_id: tradespersonId })
+    .first();
+  return portfolio;
+};
+
 
 const deletePortfolioImages = async (req, res) => {
   const { id } = req.params;

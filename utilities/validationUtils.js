@@ -2,7 +2,7 @@
 
 const validateProfession = (profession) => {
   const validProfessions = ['plumber', 'electrician', 'carpenter', 'painter'];
-  return validProfessions.includes(profession);
+  return validProfessions.includes(profession.toLowerCase());
 };
 
 module.exports = { 

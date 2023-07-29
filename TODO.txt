@@ -1,0 +1,2 @@
+Change create portfolio POST AND PATCH to PUT
+Make tradesperson_id and profolio id unique. 

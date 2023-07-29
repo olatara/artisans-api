@@ -41,13 +41,16 @@ const createTradesperson = async (req, res) => {
   }
 
   try {
-    const newTradesperson = await db("tradespersons").insert({
+    const newTradesperson = {
       name,
       profession,
       email,
       phone,
       bio,
-    });
+    }
+    
+    await db("tradespersons").insert(newTradesperson);
+    
     res.send({
       message: "Tradesperson created",
       tradesperson: newTradesperson,
