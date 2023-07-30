@@ -11,10 +11,10 @@ const config = {
     },
     gcp: {
       images: {
-        projectId: "your-project-id",
-        keyFilename: "path/to/service-account-key.json",
+        projectId: "artisans-dev-392118",
+        keyFilename: "./artisans-dev-firebase-adminsdk-kdvgs-b1fe5283d2.json",
         buckets: {
-          portfolio_images: "your-bucket-name",
+          portfolio_images: "artisans-portfolio",
           profile_pictures: "your-bucket-name",
         },
       },

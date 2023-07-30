@@ -1,8 +1,8 @@
-const config = require('./config');
+const config = require("./config");
 
 module.exports = {
   development: {
-    client: 'mysql2', // Replace with your database client
+    client: "mysql2", // Replace with your database client
     connection: {
       host: config.database.host,
       user: config.database.username,
@@ -10,8 +10,8 @@ module.exports = {
       password: config.database.password,
     },
     migrations: {
-      directory: './migrations',
-      tableName: 'knex_migrations',
+      directory: "./migrations",
+      tableName: "knex_migrations",
     },
   },
 };
